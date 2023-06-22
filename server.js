@@ -24,34 +24,36 @@ const auth = {
 };
 const transporter = nodemailer.createTransport(mg(auth));
 
-const mailSend = () => {
-  transporter.sendMail(
-    {
-      from: "moniruzzamanshakib04@gmail.com",
-      to: "moniruzzamanshakib04@gmail.com", // An array if you have multiple recipients.
-      cc: "",
-      bcc: "",
-      subject: "Hey you, awesome!",
-      //   replyTo: "reply2this@company.com",
-      //You can use "html:" to send HTML email content. It's magic!
-      html: "<b>Wow first mail sended!!!</b>",
-      //You can use "text:" to send plain-text content. It's oldschool!
-      text: "Mailgun rocks, pow pow!",
-    },
-    (err, info) => {
-      if (err) {
-        console.log(`Error: ${err}`);
-      } else {
-        console.log(`Response: ${info}`);
+const mailSend = async () => {
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(
+      {
+        from: "moniruzzamanshakib04@gmail.com",
+        to: "moniruzzamanshakib04@gmail.com", // An array if you have multiple recipients.
+        cc: "",
+        bcc: "",
+        subject: "Test mail",
+        //   replyTo: "reply2this@company.com",
+        //You can use "html:" to send HTML email content. It's magic!
+        html: "<b>You have a new mail.</b>",
+        //You can use "text:" to send plain-text content. It's oldschool!
+        //   text: "Mailgun rocks, pow pow!",
+      },
+      (err, info) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(info);
+        }
       }
-    }
-  );
+    );
+  });
 };
 
 const run = async () => {
   app.get("/send", async (req, res) => {
-    mailSend();
-    res.send("sendmail api hitted!!!");
+    const result = await mailSend();
+    res.send(result);
   });
 };
 run();
